@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 class RecipeListViewModel: ObservableObject {
 
     private let apiService: ApiServiceProtocol
@@ -29,7 +30,6 @@ extension RecipeListViewModel {
         recipes.map { RecipeViewModel(recipe: $0, imageRepository: imageRepository) }
     }
 
-    @MainActor
     func loadRecipes() async {
         do {
             recipes = try await apiService.fetchRecipes()

@@ -7,12 +7,14 @@
 
 import UIKit
 
+@MainActor
 class RecipeViewModel: ObservableObject, Identifiable {
 
     private let recipe: Recipe
     private let imageRepository: ImageRepositoryProtocol
 
-    @Published var imageResult: Result<UIImage, Error>?
+    @Published var image: UIImage?
+    @Published var isLoading: Bool = false
 
     init(
         recipe: Recipe,
@@ -33,27 +35,27 @@ extension RecipeViewModel {
         recipe.cuisine
     }
 
-    var hasImageUrl: Bool {
-        imageUrl != nil
+    func loadImage() async {
+        guard image == nil, let imageUrl else { return }
+
+        isLoading = true
+
+        image = try? await imageRepository.fetchImage(imageUrl)
+
+        isLoading = false
+    }
+
+    func cancelLoadingImage() {
+        guard isLoading, let imageUrl else { return }
+
+        Task {
+            await imageRepository.cancelFetchingImage(for: imageUrl)
+            isLoading = false
+        }
     }
 
     private var imageUrl: URL? {
         guard let urlString = recipe.photoUrlSmall else { return nil }
         return URL(string: urlString)
-    }
-
-    @MainActor
-    func loadImage() async {
-
-        imageResult = nil
-
-        guard let imageUrl else { return }
-
-        do {
-            let image = try await imageRepository.fetch(imageUrl)
-            imageResult = .success(image)
-        } catch {
-            imageResult = .failure(error)
-        }
     }
 }

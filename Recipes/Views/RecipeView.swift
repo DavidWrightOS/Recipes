@@ -18,26 +18,29 @@ struct RecipeView: View {
     var body: some View {
         HStack(spacing: 12) {
             Group {
-                if viewModel.hasImageUrl {
-                    if let result = viewModel.imageResult {
-                        if let image = try? result.get() {
-                            // Successfully loaded image
-                            Image(uiImage: image)
-                                .resizable()
-                        } else {
-                            // Error loading image
-                            Self.defaultImage()
-                        }
-                    } else {
-                        // Currently loading image
-                        ZStack {
-                            Color.primary.opacity(0.08)
-                            ProgressView()
-                        }
+                if let image = viewModel.image {
+                    // Successfully loaded image
+                    Image(uiImage: image)
+                        .resizable()
+
+                } else if viewModel.isLoading {
+                    // Currently loading image
+                    ZStack {
+                        Color.primary.opacity(0.1)
+                        ProgressView()
                     }
+
                 } else {
-                    // No image URL
-                    Self.defaultImage()
+                    // Placeholder image
+                    ZStack {
+                        Color.primary.opacity(0.1)
+
+                        Image(systemName: "fork.knife")
+                            .resizable()
+                            .scaledToFit()
+                            .foregroundStyle(.primary.opacity(0.1))
+                            .padding(8)
+                    }
                 }
             }
             .frame(width: 60, height: 60)
@@ -56,14 +59,9 @@ struct RecipeView: View {
         .task {
             await viewModel.loadImage()
         }
-    }
-}
-
-extension RecipeView {
-
-    static func defaultImage() -> Image {
-        Image(systemName: "photo")
-            .resizable()
+        .onDisappear {
+            viewModel.cancelLoadingImage()
+        }
     }
 }
 
