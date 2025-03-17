@@ -9,28 +9,35 @@ import SwiftUI
 
 struct RecipeListView: View {
 
-    let viewModel: RecipeListViewModel
+    @ObservedObject private var viewModel: RecipeListViewModel
 
     init(viewModel: RecipeListViewModel) {
         self.viewModel = viewModel
     }
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             List {
                 ForEach(viewModel.recipeViewModels) { recipeViewModel in
                     RecipeView(viewModel: recipeViewModel)
                 }
             }
+            .refreshable {
+                await viewModel.loadRecipes()
+            }
             .listStyle(.plain)
             .navigationBarTitle("Recipes")
+            .toolbarTitleDisplayMode(.inline)
+        }
+        .task {
+            await viewModel.loadRecipes()
         }
     }
 }
 
 #Preview {
     RecipeListView(
-        viewModel: RecipeListViewModel(recipes: .mockRecipes)
+        viewModel: RecipeListViewModel(apiService: MockApiService())
     )
 }
 

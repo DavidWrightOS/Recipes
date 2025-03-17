@@ -12,7 +12,7 @@ struct RecipesApp: App {
     var body: some Scene {
         WindowGroup {
             RecipeListView(
-                viewModel: RecipeListViewModel(recipes: .mockRecipes)
+                viewModel: RecipeListViewModel(apiService: ApiService())
             )
         }
     }

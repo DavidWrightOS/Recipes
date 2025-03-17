@@ -37,6 +37,6 @@ struct RecipeView: View {
 
 #Preview {
     RecipeListView(
-        viewModel: RecipeListViewModel(recipes: .mockRecipes)
+        viewModel: RecipeListViewModel(apiService: MockApiService())
     )
 }

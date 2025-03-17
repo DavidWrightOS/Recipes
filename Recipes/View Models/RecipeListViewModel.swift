@@ -7,12 +7,14 @@
 
 import Foundation
 
-struct RecipeListViewModel {
+class RecipeListViewModel: ObservableObject {
 
-    private var recipes: [Recipe]
+    private let apiService: ApiServiceProtocol
 
-    init(recipes: [Recipe]) {
-        self.recipes = recipes
+    @Published private var recipes: [Recipe] = []
+
+    init(apiService: ApiServiceProtocol) {
+        self.apiService = apiService
     }
 }
 
@@ -20,5 +22,14 @@ extension RecipeListViewModel {
 
     var recipeViewModels: [RecipeViewModel] {
         recipes.map { RecipeViewModel(recipe: $0) }
+    }
+
+    @MainActor
+    func loadRecipes() async {
+        do {
+            recipes = try await apiService.fetchRecipes()
+        } catch {
+            recipes = []
+        }
     }
 }
