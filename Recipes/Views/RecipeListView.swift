@@ -17,15 +17,21 @@ struct RecipeListView: View {
 
     var body: some View {
         NavigationStack {
-            List {
-                ForEach(viewModel.recipeViewModels) { recipeViewModel in
-                    RecipeView(viewModel: recipeViewModel)
+            Group {
+                if let emptyListViewModel = viewModel.emptyListViewModel {
+                    EmptyListView(viewModel: emptyListViewModel)
+                } else {
+                    List {
+                        ForEach(viewModel.recipeViewModels) { recipeViewModel in
+                            RecipeView(viewModel: recipeViewModel)
+                        }
+                    }
+                    .refreshable {
+                        await viewModel.loadRecipes()
+                    }
+                    .listStyle(.plain)
                 }
             }
-            .refreshable {
-                await viewModel.loadRecipes()
-            }
-            .listStyle(.plain)
             .navigationBarTitle("Recipes")
             .toolbarTitleDisplayMode(.inline)
         }

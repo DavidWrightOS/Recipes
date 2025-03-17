@@ -13,7 +13,8 @@ class RecipeListViewModel: ObservableObject {
     private let apiService: ApiServiceProtocol
     private let imageRepository: ImageRepositoryProtocol
 
-    @Published private var recipes: [Recipe] = []
+    @Published private var recipesResult: Result<[Recipe], Error>?
+    @Published private var isLoading: Bool = false
 
     init(
         apiService: ApiServiceProtocol,
@@ -27,14 +28,50 @@ class RecipeListViewModel: ObservableObject {
 extension RecipeListViewModel {
 
     var recipeViewModels: [RecipeViewModel] {
-        recipes.map { RecipeViewModel(recipe: $0, imageRepository: imageRepository) }
+        guard let recipes = try? recipesResult?.get() else { return [] }
+        return recipes.map { RecipeViewModel(recipe: $0, imageRepository: imageRepository) }
+    }
+
+    var emptyListViewModel: EmptyListViewModel? {
+        let emptyListRecipesResult: EmptyListViewModel.RecipesResult?
+
+        switch recipesResult {
+        case .success(let recipes):
+            guard recipes.isEmpty else { return nil }
+            emptyListRecipesResult = .noRecipes
+        case .failure:
+            emptyListRecipesResult = .error
+        case .none:
+            emptyListRecipesResult = nil
+        }
+
+        return EmptyListViewModel(
+            recipesResult: emptyListRecipesResult,
+            isLoading: isLoading,
+            delegate: self
+        )
     }
 
     func loadRecipes() async {
+
+        isLoading = true
+
         do {
-            recipes = try await apiService.fetchRecipes()
+            let recipes = try await apiService.fetchRecipes()
+            recipesResult = .success(recipes)
         } catch {
-            recipes = []
+            recipesResult = .failure(error)
+        }
+
+        isLoading = false
+    }
+}
+
+extension RecipeListViewModel: EmptyListViewDelegate {
+
+    nonisolated func didTapRetry() {
+        Task { @MainActor in
+            await loadRecipes()
         }
     }
 }
