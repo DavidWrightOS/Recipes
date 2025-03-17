@@ -12,7 +12,10 @@ struct RecipesApp: App {
     var body: some Scene {
         WindowGroup {
             RecipeListView(
-                viewModel: RecipeListViewModel(apiService: ApiService())
+                viewModel: RecipeListViewModel(
+                    apiService: ApiService(),
+                    imageRepository: ImageRepository.shared
+                )
             )
         }
     }

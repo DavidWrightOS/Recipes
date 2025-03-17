@@ -5,12 +5,21 @@
 //  Created by David Wright on 3/17/25.
 //
 
-struct RecipeViewModel {
+import UIKit
+
+class RecipeViewModel: ObservableObject, Identifiable {
 
     private let recipe: Recipe
+    private let imageRepository: ImageRepositoryProtocol
 
-    init(recipe: Recipe) {
+    @Published var imageResult: Result<UIImage, Error>?
+
+    init(
+        recipe: Recipe,
+        imageRepository: ImageRepositoryProtocol
+    ) {
         self.recipe = recipe
+        self.imageRepository = imageRepository
     }
 }
 
@@ -23,11 +32,28 @@ extension RecipeViewModel {
     var secondaryText: String {
         recipe.cuisine
     }
-}
 
-extension RecipeViewModel: Identifiable {
+    var hasImageUrl: Bool {
+        imageUrl != nil
+    }
 
-    var id: String {
-        recipe.id
+    private var imageUrl: URL? {
+        guard let urlString = recipe.photoUrlSmall else { return nil }
+        return URL(string: urlString)
+    }
+
+    @MainActor
+    func loadImage() async {
+
+        imageResult = nil
+
+        guard let imageUrl else { return }
+
+        do {
+            let image = try await imageRepository.fetch(imageUrl)
+            imageResult = .success(image)
+        } catch {
+            imageResult = .failure(error)
+        }
     }
 }

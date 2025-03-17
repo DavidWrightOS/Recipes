@@ -10,18 +10,23 @@ import Foundation
 class RecipeListViewModel: ObservableObject {
 
     private let apiService: ApiServiceProtocol
+    private let imageRepository: ImageRepositoryProtocol
 
     @Published private var recipes: [Recipe] = []
 
-    init(apiService: ApiServiceProtocol) {
+    init(
+        apiService: ApiServiceProtocol,
+        imageRepository: ImageRepositoryProtocol
+    ) {
         self.apiService = apiService
+        self.imageRepository = imageRepository
     }
 }
 
 extension RecipeListViewModel {
 
     var recipeViewModels: [RecipeViewModel] {
-        recipes.map { RecipeViewModel(recipe: $0) }
+        recipes.map { RecipeViewModel(recipe: $0, imageRepository: imageRepository) }
     }
 
     @MainActor
