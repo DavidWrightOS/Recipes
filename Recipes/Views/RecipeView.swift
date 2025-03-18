@@ -22,9 +22,10 @@ struct RecipeView: View {
                     // Successfully loaded image
                     Image(uiImage: image)
                         .resizable()
+                        .scaledToFill()
 
                 } else if viewModel.isLoading {
-                    // Currently loading image
+                    // Loading image
                     ZStack {
                         Color.primary.opacity(0.1)
                         ProgressView()
@@ -32,15 +33,9 @@ struct RecipeView: View {
 
                 } else {
                     // Placeholder image
-                    ZStack {
-                        Color.primary.opacity(0.1)
-
-                        Image(systemName: "fork.knife")
-                            .resizable()
-                            .scaledToFit()
-                            .foregroundStyle(.primary.opacity(0.1))
-                            .padding(8)
-                    }
+                    Image("ChefHatPlaceholder", bundle: .main)
+                        .resizable()
+                        .scaledToFit()
                 }
             }
             .frame(width: 60, height: 60)

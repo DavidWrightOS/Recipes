@@ -61,8 +61,8 @@ extension RecipeViewModel {
 }
 
 // Equatable conformance added for unit testing.
-extension RecipeViewModel: Equatable {
-    @preconcurrency static func == (lhs: RecipeViewModel, rhs: RecipeViewModel) -> Bool {
+extension RecipeViewModel: @preconcurrency Equatable {
+    static func == (lhs: RecipeViewModel, rhs: RecipeViewModel) -> Bool {
         lhs.recipe == rhs.recipe &&
         lhs.imageRepository === rhs.imageRepository &&
         lhs.image == rhs.image &&

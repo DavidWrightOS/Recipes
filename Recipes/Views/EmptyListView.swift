@@ -19,7 +19,7 @@ struct EmptyListView: View {
         ZStack {
             if viewModel.showLoadingIndicator {
                 VStack {
-                    Spacer().frame(height: 100)
+                    Spacer().frame(height: 80)
                     ProgressView()
                         .controlSize(.large)
                     Spacer()
@@ -47,7 +47,7 @@ struct EmptyListView: View {
                     .disabled(viewModel.retryButtonDisabled)
                 }
 
-                Image(systemName: "fork.knife")
+                Image("ChefHat", bundle: .main)
                     .resizable()
                     .scaledToFit()
                     .frame(width: 200, height: 200)
