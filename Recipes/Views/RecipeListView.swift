@@ -45,7 +45,13 @@ struct RecipeListView: View {
     RecipeListView(
         viewModel: RecipeListViewModel(
             apiService: MockApiService(),
-            imageRepository: ImageRepository.shared
+            imageRepository: ImageRepository(
+                imageApi: ImageApi(),
+                imageStore: ImageStore(
+                    imageCache: ImageCache(),
+                    imagePersistence: ImagePersistence()
+                )
+            )
         )
     )
 }

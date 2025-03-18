@@ -14,7 +14,13 @@ struct RecipesApp: App {
             RecipeListView(
                 viewModel: RecipeListViewModel(
                     apiService: ApiService(),
-                    imageRepository: ImageRepository.shared
+                    imageRepository: ImageRepository(
+                        imageApi: ImageApi(),
+                        imageStore: ImageStore(
+                            imageCache: ImageCache(),
+                            imagePersistence: ImagePersistence()
+                        )
+                    )
                 )
             )
         }

@@ -45,6 +45,44 @@ actor MockImageRepository: ImageRepositoryProtocol {
     }
 }
 
+struct MockImageApi: ImageApiProtocol {
+
+    var _fetchImage: (URL) async throws -> UIImage
+
+    init(
+        fetchImage: @escaping (URL) async throws -> UIImage = { _ in fatalError("Unimplemented: MockImageApi.fetchImage(for:)") }
+    ) {
+        _fetchImage = fetchImage
+    }
+
+    func fetchImage(for url: URL) async throws -> UIImage {
+        try await _fetchImage(url)
+    }
+}
+
+/// Can be used as a mock for `ImageCache` and/or `ImagePersistence`.
+class MockImageStore: ImageCacheProtocol, ImagePersistenceProtocol {
+
+    var _getImage: (URL) -> UIImage?
+    var _setImage: (UIImage, URL) -> Void
+
+    init(
+        getImage: @escaping (URL) -> UIImage? = { _ in fatalError("Unimplemented: MockImageStore.getImage(for:)") },
+        setImage: @escaping (UIImage, URL) -> Void = { _, _ in fatalError("Unimplemented: MockImageStore.setImage(_:for:)") }
+    ) {
+        _getImage = getImage
+        _setImage = setImage
+    }
+
+    func getImage(for url: URL) -> UIImage? {
+        _getImage(url)
+    }
+
+    func setImage(_ image: UIImage, for url: URL) {
+        _setImage(image, url)
+    }
+}
+
 extension Recipe {
 
     static let mockRecipe1 = Recipe(
@@ -80,4 +118,12 @@ extension Recipe {
 
 extension Array<Recipe> {
     static let mockRecipes: [Recipe] = [.mockRecipe1, .mockRecipe2]
+}
+
+extension URL {
+    static let mockUrl = URL(string: "https://example.com/image.jpg")!
+}
+
+extension UIImage {
+    static let mockImage = UIImage(systemName: "photo")!
 }
