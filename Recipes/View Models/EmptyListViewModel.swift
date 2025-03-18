@@ -5,7 +5,7 @@
 //  Created by David Wright on 3/17/25.
 //
 
-protocol EmptyListViewDelegate: AnyObject {
+protocol EmptyListViewModelDelegate: AnyObject {
     func didTapRetry()
 }
 
@@ -18,12 +18,12 @@ struct EmptyListViewModel {
 
     private let recipesResult: RecipesResult?
     private let isLoading: Bool
-    private weak var delegate: EmptyListViewDelegate?
+    private weak var delegate: EmptyListViewModelDelegate?
 
     init(
         recipesResult: RecipesResult? = nil,
         isLoading: Bool = false,
-        delegate: EmptyListViewDelegate? = nil
+        delegate: EmptyListViewModelDelegate? = nil
     ) {
         self.recipesResult = recipesResult
         self.isLoading = isLoading
@@ -58,7 +58,7 @@ extension EmptyListViewModel {
     }
 
     var retryButtonTitle: String {
-        isLoading ? "Loading..." : "Retry"
+        isLoading ? "Loading…" : "Retry"
     }
 
     var retryButtonDisabled: Bool {
@@ -67,5 +67,14 @@ extension EmptyListViewModel {
 
     func didTapRetry() {
         delegate?.didTapRetry()
+    }
+}
+
+// Equatable conformance added for unit testing.
+extension EmptyListViewModel: Equatable {
+    static func == (lhs: EmptyListViewModel, rhs: EmptyListViewModel) -> Bool {
+        lhs.recipesResult == rhs.recipesResult &&
+        lhs.isLoading == rhs.isLoading &&
+        lhs.delegate === rhs.delegate
     }
 }

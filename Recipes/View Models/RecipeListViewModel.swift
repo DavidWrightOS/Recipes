@@ -67,7 +67,7 @@ extension RecipeListViewModel {
     }
 }
 
-extension RecipeListViewModel: EmptyListViewDelegate {
+extension RecipeListViewModel: EmptyListViewModelDelegate {
 
     nonisolated func didTapRetry() {
         Task { @MainActor in

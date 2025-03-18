@@ -8,6 +8,6 @@
 import UIKit
 
 protocol ImageRepositoryProtocol: Actor {
-    func fetchImage(_ url: URL) async throws -> UIImage
+    func fetchImage(for url: URL) async throws -> UIImage
     func cancelFetchingImage(for url: URL)
 }

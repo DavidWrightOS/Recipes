@@ -18,7 +18,7 @@ actor ImageRepository: ImageRepositoryProtocol {
     private let imageCache = NSCache<NSURL, UIImage>()
 
     /// Fetches an image from a URL, caches it, and returns it as a `UIImage`.
-    public func fetchImage(_ url: URL) async throws -> UIImage {
+    public func fetchImage(for url: URL) async throws -> UIImage {
 
         // If there is an image cached for this URL, return the cached image.
         if let image = cachedImage(for: url) {

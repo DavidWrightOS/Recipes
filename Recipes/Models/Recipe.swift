@@ -47,3 +47,6 @@ extension Recipe {
 struct RecipesResponseData: Decodable {
     let recipes: [Recipe]
 }
+
+// Equatable conformance added for unit testing.
+extension Recipe: Equatable {}

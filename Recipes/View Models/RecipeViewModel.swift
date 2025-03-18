@@ -40,7 +40,7 @@ extension RecipeViewModel {
 
         isLoading = true
 
-        image = try? await imageRepository.fetchImage(imageUrl)
+        image = try? await imageRepository.fetchImage(for: imageUrl)
 
         isLoading = false
     }
@@ -57,5 +57,15 @@ extension RecipeViewModel {
     private var imageUrl: URL? {
         guard let urlString = recipe.photoUrlSmall else { return nil }
         return URL(string: urlString)
+    }
+}
+
+// Equatable conformance added for unit testing.
+extension RecipeViewModel: Equatable {
+    @preconcurrency static func == (lhs: RecipeViewModel, rhs: RecipeViewModel) -> Bool {
+        lhs.recipe == rhs.recipe &&
+        lhs.imageRepository === rhs.imageRepository &&
+        lhs.image == rhs.image &&
+        lhs.isLoading == rhs.isLoading
     }
 }
