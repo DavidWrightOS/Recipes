@@ -48,7 +48,7 @@ extension RecipeListViewModel {
         return EmptyListViewModel(
             recipesResult: emptyListRecipesResult,
             isLoading: isLoading,
-            delegate: self
+            retryButtonAction: retryButtonAction
         )
     }
 
@@ -65,12 +65,9 @@ extension RecipeListViewModel {
 
         isLoading = false
     }
-}
 
-extension RecipeListViewModel: EmptyListViewModelDelegate {
-
-    nonisolated func didTapRetry() {
-        Task { @MainActor in
+    func retryButtonAction() {
+        Task {
             await loadRecipes()
         }
     }

@@ -74,28 +74,4 @@ final class EmptyListViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.showRetryButton)
         XCTAssertTrue(viewModel.retryButtonDisabled)
     }
-
-    func testRetryButtonTappedCallsDelegateMethod() {
-
-        class MockEmptyListViewModelDelegate: EmptyListViewModelDelegate {
-            var didTapRetryDelegateMethodCalled = false
-            func didTapRetry() {
-                didTapRetryDelegateMethodCalled = true
-            }
-        }
-
-        let mockEmptyListViewModelDelegate = MockEmptyListViewModelDelegate()
-
-        let viewModel = EmptyListViewModel(
-            recipesResult: .noRecipes,
-            isLoading: false,
-            delegate: mockEmptyListViewModelDelegate
-        )
-
-        XCTAssertFalse(mockEmptyListViewModelDelegate.didTapRetryDelegateMethodCalled)
-
-        viewModel.didTapRetry()
-
-        XCTAssertTrue(mockEmptyListViewModelDelegate.didTapRetryDelegateMethodCalled)
-    }
 }

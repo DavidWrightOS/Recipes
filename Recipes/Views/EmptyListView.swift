@@ -38,7 +38,7 @@ struct EmptyListView: View {
 
                 if viewModel.showRetryButton {
                     Button {
-                        viewModel.didTapRetry()
+                        viewModel.retryButtonAction()
                     } label: {
                         Text(viewModel.retryButtonTitle)
                             .bold()

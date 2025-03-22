@@ -5,10 +5,6 @@
 //  Created by David Wright on 3/17/25.
 //
 
-protocol EmptyListViewModelDelegate: AnyObject {
-    func didTapRetry()
-}
-
 struct EmptyListViewModel {
 
     enum RecipesResult {
@@ -18,16 +14,17 @@ struct EmptyListViewModel {
 
     private let recipesResult: RecipesResult?
     private let isLoading: Bool
-    private weak var delegate: EmptyListViewModelDelegate?
+
+    let retryButtonAction: () -> Void
 
     init(
         recipesResult: RecipesResult? = nil,
         isLoading: Bool = false,
-        delegate: EmptyListViewModelDelegate? = nil
+        retryButtonAction: @escaping () -> Void = {}
     ) {
         self.recipesResult = recipesResult
         self.isLoading = isLoading
-        self.delegate = delegate
+        self.retryButtonAction = retryButtonAction
     }
 }
 
@@ -64,17 +61,12 @@ extension EmptyListViewModel {
     var retryButtonDisabled: Bool {
         isLoading
     }
-
-    func didTapRetry() {
-        delegate?.didTapRetry()
-    }
 }
 
 // Equatable conformance added for unit testing.
 extension EmptyListViewModel: Equatable {
     static func == (lhs: EmptyListViewModel, rhs: EmptyListViewModel) -> Bool {
         lhs.recipesResult == rhs.recipesResult &&
-        lhs.isLoading == rhs.isLoading &&
-        lhs.delegate === rhs.delegate
+        lhs.isLoading == rhs.isLoading
     }
 }

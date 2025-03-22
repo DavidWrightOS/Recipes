@@ -43,8 +43,7 @@ final class RecipeListViewModelTests: XCTestCase {
 
         let expectedEmptyListViewModel = EmptyListViewModel(
             recipesResult: .noRecipes,
-            isLoading: false,
-            delegate: viewModel
+            isLoading: false
         )
         XCTAssertEqual(viewModel.emptyListViewModel, expectedEmptyListViewModel)
     }
@@ -61,8 +60,7 @@ final class RecipeListViewModelTests: XCTestCase {
 
         let expectedEmptyListViewModel = EmptyListViewModel(
             recipesResult: .error,
-            isLoading: false,
-            delegate: viewModel
+            isLoading: false
         )
         XCTAssertEqual(viewModel.emptyListViewModel, expectedEmptyListViewModel)
     }
@@ -98,7 +96,7 @@ final class RecipeListViewModelTests: XCTestCase {
             imageRepository: MockImageRepository()
         )
 
-        viewModel.didTapRetry()
+        viewModel.retryButtonAction()
 
         await fulfillment(of: [expectation], timeout: 10.0)
     }
